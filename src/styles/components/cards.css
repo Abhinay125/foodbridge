@@ -1,0 +1,185 @@
+/* CARDS */
+
+.category {
+    padding: 25px;
+    min-height: 210px;
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 24px;
+    text-align: left;
+    transition: 0.2s;
+    color: var(--text);
+}
+
+.category:hover {
+    border-color: #9ed8b3;
+    transform: translateY(-3px);
+    box-shadow: 0 12px 30px #163d2010;
+}
+
+.category .emoji {
+    display: block;
+    font-size: 42px;
+    margin-bottom: 20px;
+}
+
+.category h3 {
+    font-size: 23px;
+    margin-bottom: 8px;
+}
+
+.category p {
+    font-size: 14px;
+    color: var(--gray);
+}
+
+.category .arrow {
+    float: right;
+    font-size: 24px;
+    color: var(--green);
+}
+
+.impact-card {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 20px;
+}
+
+.impact-icon {
+    font-size: 25px;
+    margin-bottom: 12px;
+}
+
+.impact-value {
+    font-size: 27px;
+    font-weight: 750;
+    color: var(--green);
+}
+
+.impact-label {
+    font-size: 13px;
+    color: var(--gray);
+    margin-top: 6px;
+    line-height: 1.5;
+}
+
+.impact-note {
+    font-size: 11px;
+    color: var(--gray);
+    margin-top: 12px;
+    line-height: 1.5;
+}
+
+.food-card {
+    overflow: hidden;
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    transition: 0.2s;
+}
+
+.food-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 25px #163d2010;
+}
+
+.food-image {
+    width: 100%;
+    height: 190px;
+    object-fit: cover;
+    display: block;
+    background: var(--light-green);
+}
+
+.food-details {
+    padding: 17px;
+}
+
+.food-details h3 {
+    font-size: 18px;
+    margin-bottom: 8px;
+}
+
+.hotel-name {
+    font-size: 13px;
+    color: var(--gray);
+    margin-bottom: 9px;
+}
+
+.food-distance {
+    font-size: 13px;
+    font-weight: 650;
+    color: var(--green);
+    margin-bottom: 9px;
+}
+
+.food-quantity {
+    font-size: 13px;
+    margin-bottom: 10px;
+}
+
+.food-status {
+    display: inline-block;
+    font-size: 12px;
+    font-weight: 650;
+    color: var(--green);
+    background: var(--light-green);
+    border-radius: 20px;
+    padding: 6px 10px;
+    margin-bottom: 13px;
+}
+
+.food-status.unavailable {
+    background: #ffe8e8;
+    color: #b42323;
+}
+
+.message-card {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    padding: 20px;
+}
+
+.message-card h3 {
+    font-size: 17px;
+    margin-bottom: 8px;
+}
+
+.message-card p {
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--gray);
+    margin-bottom: 9px;
+    overflow-wrap: anywhere;
+}
+
+.simple-card {
+    padding: 24px;
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    background: white;
+    margin-bottom: 15px;
+    line-height: 1.8;
+}
+
+.simple-card p {
+    color: var(--gray);
+    font-size: 14px;
+}
+
+.empty-state {
+    padding: 25px;
+    border-radius: 18px;
+    background: white;
+    border: 1px solid var(--border);
+    color: var(--gray);
+    line-height: 1.7;
+}
+
+.profile-name {
+    font-size: 24px;
+    font-weight: 750;
+    margin-bottom: 10px;
+}

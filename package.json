@@ -1,0 +1,31 @@
+{
+  "name": "foodbridge",
+  "version": "1.0.0",
+  "description": "FoodBridge - A platform for food redistribution and community support",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview",
+    "type-check": "tsc --noEmit",
+    "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
+    "format": "prettier --write \"src/**/*.{ts,tsx,css,md}\"",
+    "test:unit": "vitest",
+    "test:e2e": "playwright test"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.39.0",
+    "leaflet": "^1.9.4"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.40.1",
+    "@types/leaflet": "^1.9.8",
+    "@types/node": "^20.10.5",
+    "eslint": "^8.56.0",
+    "prettier": "^3.1.1",
+    "terser": "^5.26.0",
+    "typescript": "^5.3.3",
+    "vite": "^5.0.8",
+    "vitest": "^1.1.0"
+  }
+}

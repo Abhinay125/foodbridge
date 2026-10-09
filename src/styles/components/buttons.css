@@ -1,0 +1,59 @@
+/* BUTTONS */
+
+.primary-button {
+    display: block;
+    width: 100%;
+    padding: 12px;
+    border: none;
+    border-radius: 12px;
+    background: var(--green);
+    color: white;
+    font-size: 14px;
+    font-weight: 650;
+}
+
+.primary-button:hover {
+    background: #116b3b;
+}
+
+.secondary-button {
+    width: 100%;
+    padding: 11px;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    background: white;
+    color: var(--text);
+    font-weight: 600;
+    margin-top: 9px;
+}
+
+.food-card-button {
+    display: block;
+    width: 100%;
+    padding: 12px;
+    border: none;
+    border-radius: 12px;
+    background: var(--green);
+    color: white;
+    font-size: 14px;
+    font-weight: 650;
+}
+
+.food-card-button:hover {
+    background: #116b3b;
+}
+
+.food-card-button:disabled {
+    background: #a7b0aa;
+    cursor: not-allowed;
+}
+
+.back-button {
+    border: none;
+    background: var(--light-green);
+    color: var(--green);
+    padding: 11px 17px;
+    border-radius: 12px;
+    font-weight: 650;
+    margin-bottom: 25px;
+}

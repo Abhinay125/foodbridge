@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FoodBridge</title>
+
+    <!-- Map library -->
+    <link
+        rel="stylesheet"
+        href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    >
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="/src/styles/main.css">
+</head>
+
+<body>
+
+<aside class="sidebar">
+
+    <div class="logo">
+        <button
+            type="button"
+            class="profile-circle"
+            id="profileButton"
+            aria-label="Open user profile">F</button>
+
+        <div class="brand">
+            <span class="leaf">🍃</span> FoodBridge
+        </div>
+    </div>
+
+    <nav class="nav" aria-label="Main navigation">
+
+        <button class="active" data-page="home" type="button">
+            <span class="icon">🍽️</span>
+            <span data-i18n="food">Food</span>
+        </button>
+
+        <button data-page="donate" type="button">
+            <span class="icon">💚</span>
+            <span data-i18n="donate">Donate</span>
+        </button>
+
+        <button data-page="maps" type="button">
+            <span class="icon">📍</span>
+            <span data-i18n="maps">Maps</span>
+        </button>
+
+        <button data-page="messages" type="button" id="messagesNav">
+            <span class="icon">💬</span>
+            <span data-i18n="messages">Messages</span>
+            <span class="badge" id="messageBadge" hidden>0</span>
+        </button>
+
+        <button data-page="settings" type="button">
+            <span class="icon">⚙️</span>
+            <span data-i18n="settings">Settings</span>
+        </button>
+
+    </nav>
+</aside>
+
+<main class="main">
+
+    <!-- HOME -->
+
+    <section class="page active" id="homePage">
+
+        <header class="topbar">
+            <h1 data-i18n="discoverFood">Discover Food</h1>
+        </header>
+
+        <section class="intro">
+            <h2 data-i18n="homeHeading">Good food.<br>Greater good. 🌿</h2>
+            <p data-i18n="homeDescription">
+                Discover surplus food and help make a difference.
+                Connect extra food with people who need it.
+            </p>
+        </section>
+
+        <section class="categories" aria-label="Food categories">
+
+            <button class="category" data-category="Veg" type="button">
+                <span class="arrow">↗</span>
+                <span class="emoji">🥦</span>
+                <h3 data-i18n="veg">Veg</h3>
+                <p data-i18n="vegDescription">Explore vegetarian food donations</p>
+            </button>
+
+            <button class="category" data-category="Non-Veg" type="button">
+                <span class="arrow">↗</span>
+                <span class="emoji">🍗</span>
+                <h3 data-i18n="nonveg">Non-Veg</h3>
+                <p data-i18n="nonvegDescription">Explore non-vegetarian food donations</p>
+            </button>
+
+        </section>
+
+        <section class="live-impact">
+            <h2 class="impact-heading" data-i18n="impact">🌍 Our Impact</h2>
+
+            <p class="impact-subtitle" data-i18n="impactSubtitle">
+                Every meal makes a difference.
+            </p>
+
+            <div class="impact-grid">
+
+                <article class="impact-card">
+                    <div class="impact-icon">🍱</div>
+                    <div class="impact-value" id="mealsCount">1,284</div>
+                    <div class="impact-label" data-i18n="mealsRescued">Meals Rescued</div>
+                </article>
+
+                <article class="impact-card">
+                    <div class="impact-icon">💚</div>
+                    <div class="impact-value">856</div>
+                    <div class="impact-label" data-i18n="peopleHelped">People Helped</div>
+                </article>
+
+                <article class="impact-card">
+                    <div class="impact-icon">♻️</div>
+                    <div class="impact-value">642 kg</div>
+                    <div class="impact-label" data-i18n="foodSaved">Food Saved from Waste</div>
+                </article>
+
+                <article class="impact-card">
+                    <div class="impact-icon">🤝</div>
+                    <div class="impact-value" id="completedCount">128</div>
+                    <div class="impact-label" data-i18n="completedDonations">Donations Completed</div>
+                </article>
+
+            </div>
+
+            <p class="impact-note" data-i18n="demoStats">
+                Demo statistics only. These are not verified live figures.
+            </p>
+        </section>
+    </section>
+
+    <!-- FOOD LISTINGS -->
+
+    <section class="page" id="foodPage">
+
+        <button class="back-button" type="button" data-back>
+            ← <span data-i18n="backHome">Back to Home</span>
+        </button>
+
+        <h2 class="section-title" id="foodPageTitle">Available Food</h2>
+
+        <p class="section-description" id="foodPageDescription">
+            Explore available food donations.
+        </p>
+
+        <div class="food-grid" id="foodGrid"></div>
+
+        <p class="message" id="foodPageMessage" role="status"></p>
+
+    </section>
+
+    <!-- DONATE -->
+
+    <section class="page" id="donatePage">
+
+        <button class="back-button" type="button" data-back>
+            ← <span data-i18n="backHome">Back to Home</span>
+        </button>
+
+        <h2 class="section-title" data-i18n="donateHeading">Donate Food 💚</h2>
+
+        <p class="section-description" data-i18n="donateDescription">
+            Add your surplus food. Required fields are marked with *.
+        </p>
+
+        <form class="donation-form" id="donationForm">
+
+            <div class="form-grid">
+
+                <div class="form-group">
+                    <label for="donorName">
+                        Restaurant / Donor Name <span class="required">*</span>
+                    </label>
+                    <input id="donorName" required maxlength="100"
+                           placeholder="Restaurant or donor name">
+                </div>
+
+                <div class="form-group">
+                    <label for="foodName">
+                        Food Name <span class="required">*</span>
+                    </label>
+                    <input id="foodName" required maxlength="100"
+                           placeholder="e.g. Vegetable biryani">
+                </div>
+
+                <div class="form-group">
+                    <label for="foodType">
+                        Food Type <span class="required">*</span>
+                    </label>
+                    <select id="foodType" required>
+                        <option value="">Select food type</option>
+                        <option value="Veg">Vegetarian</option>
+                        <option value="Non-Veg">Non-Vegetarian</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="quantity">
+                        Number of Servings <span class="required">*</span>
+                    </label>
+                    <input id="quantity" type="number" min="1" max="10000"
+                           step="1" required placeholder="e.g. 20">
+                </div>
+
+                <div class="form-group">
+                    <label for="preparedAt">
+                        Preparation Date & Time <span class="required">*</span>
+                    </label>
+                    <input id="preparedAt" type="datetime-local" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="pickupTime">
+                        Pickup Deadline <span class="required">*</span>
+                    </label>
+                    <input id="pickupTime" type="datetime-local" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="storage">
+                        Storage Method <span class="required">*</span>
+                    </label>
+                    <select id="storage" required>
+                        <option value="">Select storage method</option>
+                        <option>Kept hot safely</option>
+                        <option>Refrigerated</option>
+                        <option>Frozen</option>
+                        <option>Room temperature</option>
+                        <option>Other / unsure</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="foodCondition">
+                        Food Condition <span class="required">*</span>
+                    </label>
+                    <select id="foodCondition" required>
+                        <option value="">Select condition</option>
+                        <option value="Fresh and properly stored">
+                            Fresh and properly stored
+                        </option>
+                        <option value="Quality uncertain">
+                            Quality uncertain
+                        </option>
+                        <option value="Spoiled or unsafe">
+                            Spoiled or unsafe
+                        </option>
+                    </select>
+                </div>
+
+                <div class="form-group full">
+                    <label for="foodPhoto">
+                        Food Photo <span class="required">*</span>
+                    </label>
+                    <input id="foodPhoto" type="file" accept="image/*" required>
+                    <span class="form-help">
+                        Select a clear photo of the actual food.
+                    </span>
+                    <img id="photoPreview" alt="Food photo preview"
+                         style="display:none;max-width:220px;max-height:180px;object-fit:cover;border-radius:12px;">
+                </div>
+
+                <div class="form-group full">
+                    <label for="address">
+                        Pickup Address <span class="required">*</span>
+                    </label>
+                    <textarea id="address" required maxlength="500"
+                              placeholder="Full address and nearby landmark"></textarea>
+                </div>
+
+                <div class="form-group full">
+                    <label for="contact">
+                        Contact Number <span class="required">*</span>
+                    </label>
+                    <input id="contact" type="tel" required
+                           pattern="[0-9+\-\s()]{8,20}" maxlength="20"
+                           placeholder="Contact number">
+                </div>
+
+                <div class="form-group full">
+                    <label for="donorLocation">
+                        Pin Your Pickup Location <span class="required">*</span>
+                    </label>
+
+                    <button class="secondary-button" id="getDonorLocation"
+                            type="button">
+                        📍 Use My Current Location
+                    </button>
+
+                    <span class="form-help" id="donorLocationStatus">
+                        Allow location access or enter coordinates below.
+                    </span>
+                </div>
+
+                <div class="form-group">
+                    <label for="donorLat">Latitude <span class="required">*</span></label>
+                    <input id="donorLat" type="number" step="any" required
+                           min="-90" max="90" placeholder="e.g. 17.385">
+                </div>
+
+                <div class="form-group">
+                    <label for="donorLng">Longitude <span class="required">*</span></label>
+                    <input id="donorLng" type="number" step="any" required
+                           min="-180" max="180" placeholder="e.g. 78.4867">
+                </div>
+
+                <div class="form-group full">
+                    <label for="notes">Ingredients, Allergens & Other Details</label>
+                    <textarea id="notes" maxlength="1000"
+                              placeholder="Mention known allergens, ingredients, packaging, and pickup instructions"></textarea>
+                </div>
+
+            </div>
+
+            <div class="safety-box">
+                <h3>🛡️ Food Safety Confirmation</h3>
+
+                <p>
+                    Only donate food that is suitable for consumption and has
+                    been handled and stored safely. A photograph cannot prove
+                    that food is safe.
+                </p>
+
+                <label class="checkbox-row">
+                    <input type="checkbox" id="safeHandling" required>
+                    <span>I confirm that the food has been handled and stored appropriately. *</span>
+                </label>
+
+                <label class="checkbox-row">
+                    <input type="checkbox" id="allergenInfo" required>
+                    <span>I have provided known ingredient and allergen information. *</span>
+                </label>
+
+                <label class="checkbox-row">
+                    <input type="checkbox" id="accurateDetails" required>
+                    <span>The food details, times, address and contact details are accurate. *</span>
+                </label>
+            </div>
+
+            <button class="primary-button" type="submit">
+                Submit Food Donation
+            </button>
+
+            <div class="form-message" id="formMessage"
+                 role="status" aria-live="polite"></div>
+        </form>
+    </section>
+
+    <!-- MAPS -->
+
+    <section class="page" id="mapsPage">
+
+        <button class="back-button" type="button" data-back>
+            ← <span data-i18n="backHome">Back to Home</span>
+        </button>
+
+        <h2 class="section-title">📍 FoodBridge Map</h2>
+
+        <p class="section-description">
+            Explore available food donations. Select a map marker to see the
+            food details and open its listing.
+        </p>
+
+        <div id="map"></div>
+
+        <p class="map-note" id="mapNote">
+            Markers are based on saved donation coordinates. Enable location
+            permission to see your current position.
+        </p>
+
+        <button class="primary-button" id="refreshMap" type="button">
+            Refresh Map
+        </button>
+    </section>
+
+    <!-- MESSAGES -->
+
+    <section class="page" id="messagesPage">
+
+        <button class="back-button" type="button" data-back>
+            ← <span data-i18n="backHome">Back to Home</span>
+        </button>
+
+        <h2 class="section-title">💬 Messages</h2>
+
+        <p class="section-description">
+            Food pickup requests, donor replies and collection confirmations
+            appear here.
+        </p>
+
+        <div id="messageList" class="message-list"></div>
+
+        <p class="message">
+            Demo note: messages are saved in this browser. For different
+            people using separate devices, connect FoodBridge to a backend.
+        </p>
+    </section>
+
+    <!-- SETTINGS -->
+
+    <section class="page" id="settingsPage">
+
+        <button class="back-button" type="button" data-back>
+            ← <span data-i18n="backHome">Back to Home</span>
+        </button>
+
+        <h2 class="section-title" data-i18n="settingsHeading">⚙️ Settings</h2>
+
+        <div class="panel">
+
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input id="username" maxlength="50"
+                       placeholder="Enter your username">
+            </div>
+
+            <div class="form-group">
+                <label for="language">Language</label>
+                <select id="language">
+                    <option value="en">English</option>
+                    <option value="te">తెలుగు (Telugu)</option>
+                    <option value="hi">हिन्दी (Hindi)</option>
+                </select>
+                <span class="form-help">
+                    Changes the supported interface text. Some food details
+                    entered by users remain in their original language.
+                </span>
+            </div>
+
+            <button class="primary-button" id="saveSettings" type="button">
+                Save Settings
+            </button>
+
+            <div class="form-message" id="settingsMessage"></div>
+        </div>
+
+        <div class="simple-card" style="margin-top:20px;">
+            <h3>About FoodBridge</h3>
+            <p>
+                FoodBridge connects surplus food donors with people who need
+                food. This prototype uses local browser storage and illustrative
+                sample listings. Real accounts, secure messaging and shared
+                databases must be implemented before public deployment.
+            </p>
+        </div>
+    </section>
+
+    <!-- PROFILE -->
+
+    <section class="page" id="profilePage">
+
+        <button class="back-button" type="button" data-back>
+            ← <span data-i18n="backHome">Back to Home</span>
+        </button>
+
+        <h2 class="section-title">👤 User Profile</h2>
+
+        <div class="simple-card">
+            <div class="profile-name" id="profileName">FoodBridge User</div>
+            <p>Use Settings to change your username and preferred language.</p>
+            <button class="primary-button" id="editProfile" type="button"
+                    style="margin-top:18px;">
+                Edit Profile
+            </button>
+        </div>
+    </section>
+
+</main>
+
+<script type="module" src="/src/main.ts"></script>
+</body>
+</html>

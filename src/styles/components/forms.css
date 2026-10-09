@@ -1,0 +1,113 @@
+/* FORMS */
+
+.donation-form,
+.panel {
+    max-width: 850px;
+    padding: 28px;
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 24px;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 20px;
+}
+
+.form-group.full {
+    grid-column: 1 / -1;
+}
+
+.form-group label {
+    font-size: 14px;
+    font-weight: 650;
+}
+
+.required {
+    color: var(--red);
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    padding: 13px 14px;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    font-size: 14px;
+    background: #fff;
+    outline-color: var(--green);
+}
+
+.form-group textarea {
+    min-height: 90px;
+    resize: vertical;
+}
+
+.form-help {
+    color: var(--gray);
+    font-size: 12px;
+    line-height: 1.5;
+}
+
+.safety-box {
+    padding: 18px;
+    background: #f5fbf6;
+    border: 1px solid #d9eddf;
+    border-radius: 16px;
+    margin-bottom: 22px;
+}
+
+.safety-box h3 {
+    font-size: 17px;
+    margin-bottom: 8px;
+}
+
+.safety-box p {
+    color: var(--gray);
+    font-size: 13px;
+    line-height: 1.6;
+    margin-bottom: 14px;
+}
+
+.checkbox-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 13px;
+    line-height: 1.6;
+    margin-top: 12px;
+}
+
+.checkbox-row input {
+    margin-top: 4px;
+    accent-color: var(--green);
+}
+
+.form-message {
+    display: none;
+    padding: 15px;
+    margin-top: 18px;
+    border-radius: 12px;
+    background: var(--light-green);
+    color: var(--green);
+    line-height: 1.6;
+    font-size: 14px;
+}
+
+.form-message.show {
+    display: block;
+}
+
+.form-message.error {
+    color: #a91f1f;
+    background: #ffeaea;
+}

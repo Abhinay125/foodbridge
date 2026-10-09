@@ -1,0 +1,52 @@
+/* HEADER / TOPBAR */
+
+.main {
+    margin-left: 230px;
+    padding: 30px 45px;
+    min-height: 100vh;
+}
+
+.topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 45px;
+}
+
+.topbar h1 {
+    font-size: 26px;
+}
+
+.intro {
+    margin-bottom: 30px;
+}
+
+.intro h2 {
+    font-size: clamp(28px, 4vw, 42px);
+    letter-spacing: -1.5px;
+    margin-bottom: 10px;
+}
+
+.intro p,
+.section-description {
+    color: var(--gray);
+    line-height: 1.7;
+}
+
+.section-title {
+    font-size: clamp(27px, 4vw, 36px);
+    margin-bottom: 10px;
+    letter-spacing: -1px;
+}
+
+.section-description {
+    margin-bottom: 25px;
+}
+
+.message {
+    margin-top: 20px;
+    color: var(--gray);
+    font-size: 14px;
+    line-height: 1.6;
+}
