@@ -6,6 +6,12 @@
 @import './components/map.css';
 @import './components/messages.css';
 @import './components/sidebar.css';
+@import './components/tabs.css';
+@import './components/loading.css';
+@import './components/states.css';
+@import './components/images.css';
+@import './components/profile.css';
 @import './layouts/header.css';
 @import './layouts/grid.css';
+@import './layouts/pages.css';
 @import './layouts/responsive.css';

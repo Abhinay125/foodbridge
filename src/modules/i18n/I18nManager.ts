@@ -35,6 +35,7 @@ export class I18nManager implements II18nManager {
   }
 
   getCurrentLanguage(): Language { return this.currentLanguage; }
+  getCurrentLocale(): Language { return this.currentLanguage; }
 
   translate(key: string, params?: Record<string, any>): string {
     const translation = this.translations[this.currentLanguage]?.[key] || this.translations.en[key] || key;

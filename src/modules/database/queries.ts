@@ -670,7 +670,7 @@ export const messageQueries = {
   /**
    * Get conversations for a user
    */
-  async getConversations(_userId: string): Promise<Array<{
+  async getConversations(userId: string): Promise<Array<{
     id: string;
     other_user_id: string;
     other_user_name: string;
@@ -680,10 +680,65 @@ export const messageQueries = {
     unread_count: number;
     listing_id?: string;
     pickup_request_id?: string;
+    updated_at: string;
   }>> {
-    // This would typically use a database function or view
-    // For now, return empty array - implement based on your conversation view
-    return [];
+    // Get all messages for this user, grouped by conversation partner
+    const { data, error } = await supabaseClient.client
+      .from('messages')
+      .select(`
+        *,
+        profiles!messages_sender_id_fkey (
+          full_name,
+          profile_picture_url,
+          user_type
+        ),
+        profiles!messages_recipient_id_fkey (
+          full_name,
+          profile_picture_url,
+          user_type
+        )
+      `)
+      .or(`sender_id.eq.${userId},recipient_id.eq.${userId}`)
+      .eq('is_deleted', false)
+      .order('created_at', { ascending: false });
+
+    if (error) throw new Error(`Get conversations failed: ${error.message}`);
+    
+    // Group by conversation partner
+    const conversations = new Map<string, any>();
+    
+    (data as any[])?.forEach(msg => {
+      const otherUserId = msg.sender_id === userId ? msg.recipient_id : msg.sender_id;
+      const otherUser = msg.sender_id === userId ? msg.profiles_recipient_id_fkey : msg.profiles_sender_id_fkey;
+      
+      if (!conversations.has(otherUserId)) {
+        conversations.set(otherUserId, {
+          id: `${userId}-${otherUserId}`,
+          other_user_id: otherUserId,
+          other_user_name: otherUser?.full_name || 'Unknown',
+          other_user_avatar: otherUser?.profile_picture_url,
+          other_user_type: otherUser?.user_type || 'donor',
+          last_message: {
+            ...msg,
+            sender_name: otherUser?.full_name || 'Unknown',
+            sender_avatar_url: otherUser?.profile_picture_url,
+            sender_user_type: otherUser?.user_type || 'donor'
+          },
+          unread_count: 0,
+          listing_id: msg.listing_id,
+          pickup_request_id: msg.pickup_request_id,
+          updated_at: msg.created_at
+        });
+      }
+      
+      if (!msg.is_read && msg.recipient_id === userId) {
+        conversations.get(otherUserId).unread_count++;
+      }
+    });
+    
+    return Array.from(conversations.values()).sort((a, b) => 
+      new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime()
+    );
   },
 
   /**

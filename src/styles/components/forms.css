@@ -58,6 +58,7 @@
     line-height: 1.5;
 }
 
+/* Safety box */
 .safety-box {
     padding: 18px;
     background: #f5fbf6;
@@ -92,6 +93,7 @@
     accent-color: var(--green);
 }
 
+/* Form message */
 .form-message {
     display: none;
     padding: 15px;
@@ -110,4 +112,21 @@
 .form-message.error {
     color: #a91f1f;
     background: #ffeaea;
+}
+
+/* Responsive */
+@media (max-width: 650px) {
+    .donation-form,
+    .panel {
+        padding: 18px;
+    }
+
+    .form-grid {
+        grid-template-columns: 1fr;
+        gap: 0;
+    }
+
+    .form-group.full {
+        grid-column: auto;
+    }
 }

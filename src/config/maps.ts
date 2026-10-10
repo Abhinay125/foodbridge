@@ -7,8 +7,8 @@ export const MAP_CONFIG = {
    * Default map center - Hyderabad, India
    */
   DEFAULT_CENTER: {
-    latitude: 17.385044,
-    longitude: 78.486671,
+    lat: 17.385044,
+    lng: 78.486671,
   } as const,
 
   /**

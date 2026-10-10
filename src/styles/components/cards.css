@@ -135,6 +135,40 @@
     color: #b42323;
 }
 
+.food-card-button,
+.primary-button {
+    display: block;
+    width: 100%;
+    padding: 12px;
+    border: none;
+    border-radius: 12px;
+    background: var(--green);
+    color: white;
+    font-size: 14px;
+    font-weight: 650;
+}
+
+.food-card-button:hover,
+.primary-button:hover {
+    background: #116b3b;
+}
+
+.food-card-button:disabled {
+    background: #a7b0aa;
+    cursor: not-allowed;
+}
+
+.secondary-button {
+    width: 100%;
+    padding: 11px;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    background: white;
+    color: var(--text);
+    font-weight: 600;
+    margin-top: 9px;
+}
+
 .message-card {
     background: white;
     border: 1px solid var(--border);
@@ -153,6 +187,34 @@
     color: var(--gray);
     margin-bottom: 9px;
     overflow-wrap: anywhere;
+}
+
+.message-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 12px;
+}
+
+.message-actions button {
+    flex: 1;
+    min-width: 140px;
+    border: none;
+    border-radius: 11px;
+    padding: 11px;
+    background: var(--light-green);
+    color: var(--green);
+    font-weight: 650;
+}
+
+.message-actions button.primary {
+    background: var(--green);
+    color: white;
+}
+
+.message-actions button.danger {
+    background: #ffe8e8;
+    color: #b42323;
 }
 
 .simple-card {

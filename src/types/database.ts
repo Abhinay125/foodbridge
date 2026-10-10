@@ -202,6 +202,7 @@ export interface NgoLocation extends Timestamps {
   operating_hours?: Record<string, string> // JSONB: {"monday": "9:00-17:00", ...}
   services_offered: string[] // TEXT[] - array of ServiceType values
   capacity_description?: string
+  persons_helped: number
   is_active: boolean
   accepts_pickups: boolean
   service_radius_km: number
@@ -369,6 +370,20 @@ export interface ActiveLocationShare extends Timestamps {
 
 export type ActiveLocationShareInsert = Omit<ActiveLocationShare, 'id' | 'created_at' | 'updated_at' | 'is_active' | 'share_started_at' | 'last_update_at'>
 export type ActiveLocationShareUpdate = Partial<Omit<ActiveLocationShare, 'id' | 'created_at' | 'pickup_request_id' | 'shared_by'>>
+
+// ============================================================================
+// OTP_VERIFICATIONS TABLE
+// ============================================================================
+
+export interface OtpVerification extends Timestamps {
+  id: string // UUID
+  mobile_number: string
+  otp: string
+  expires_at: string
+}
+
+export type OtpVerificationInsert = Omit<OtpVerification, 'id' | 'created_at' | 'updated_at'>
+export type OtpVerificationUpdate = Partial<Omit<OtpVerification, 'id' | 'created_at' | 'updated_at'>>
 
 // ============================================================================
 // COMPOSITE/VIEW TYPES
@@ -564,6 +579,7 @@ export interface DatabaseSchema {
   pickup_requests: PickupRequest
   messages: Message
   active_location_shares: ActiveLocationShare
+  otp_verifications: OtpVerification
 }
 
 export type TableNames = keyof DatabaseSchema
@@ -580,6 +596,7 @@ export interface DatabaseInsertSchema {
   pickup_requests: PickupRequestInsert
   messages: MessageInsert
   active_location_shares: ActiveLocationShareInsert
+  otp_verifications: OtpVerificationInsert
 }
 
 export type InsertType<T extends TableNames> = DatabaseInsertSchema[T]
@@ -593,6 +610,7 @@ export interface DatabaseUpdateSchema {
   pickup_requests: PickupRequestUpdate
   messages: MessageUpdate
   active_location_shares: ActiveLocationShareUpdate
+  otp_verifications: OtpVerificationUpdate
 }
 
 export type UpdateType<T extends TableNames> = DatabaseUpdateSchema[T]

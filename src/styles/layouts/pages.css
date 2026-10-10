@@ -1,0 +1,420 @@
+/* PAGE LAYOUTS FOR ROUTER-BASED PAGES */
+
+/* Categories Grid */
+.categories {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 22px;
+}
+
+.category {
+    padding: 25px;
+    min-height: 210px;
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 24px;
+    text-align: left;
+    transition: 0.2s;
+    color: var(--text);
+}
+
+.category:hover {
+    border-color: #9ed8b3;
+    transform: translateY(-3px);
+    box-shadow: 0 12px 30px #163d2010;
+}
+
+.category .emoji {
+    display: block;
+    font-size: 42px;
+    margin-bottom: 20px;
+}
+
+.category h3 {
+    font-size: 23px;
+    margin-bottom: 8px;
+}
+
+.category p {
+    font-size: 14px;
+    color: var(--gray);
+}
+
+.category .arrow {
+    float: right;
+    font-size: 24px;
+    color: var(--green);
+}
+
+/* Impact Grid */
+.live-impact {
+    margin-top: 38px;
+}
+
+.impact-heading {
+    font-size: 25px;
+}
+
+.impact-subtitle {
+    color: var(--gray);
+    font-size: 14px;
+    margin-top: 7px;
+    margin-bottom: 20px;
+}
+
+.impact-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+}
+
+.impact-card {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 20px;
+}
+
+.impact-icon {
+    font-size: 25px;
+    margin-bottom: 12px;
+}
+
+.impact-value {
+    font-size: 27px;
+    font-weight: 750;
+    color: var(--green);
+}
+
+.impact-label {
+    font-size: 13px;
+    color: var(--gray);
+    margin-top: 6px;
+    line-height: 1.5;
+}
+
+.impact-note {
+    font-size: 11px;
+    color: var(--gray);
+    margin-top: 12px;
+    line-height: 1.5;
+}
+
+/* Page styles */
+.page {
+    display: none;
+}
+
+#homePage {
+    background: #fff8e7;
+}
+
+#foodPage {
+    background: #f0f8ff;
+}
+
+#donatePage {
+    background: #f0fff4;
+}
+
+#mapsPage {
+    background: #f0f8ff;
+}
+
+#messagesPage {
+    background: #fff0f5;
+}
+
+#settingsPage {
+    background: #f5f0ff;
+}
+
+#profilePage {
+    background: #fff5e6;
+}
+
+.page.active {
+    display: block;
+}
+
+/* Food Grid */
+.food-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 20px;
+}
+
+/* Message list */
+.message-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.empty-state {
+    padding: 25px;
+    border-radius: 18px;
+    background: white;
+    border: 1px solid var(--border);
+    color: var(--gray);
+    line-height: 1.7;
+}
+
+/* Back button */
+.back-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    border: none;
+    background: var(--light-green);
+    color: var(--green);
+    padding: 11px 17px;
+    border-radius: 12px;
+    font-weight: 650;
+    margin-bottom: 25px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.back-button:hover {
+    background: #d5f1df;
+}
+
+/* Section title */
+.section-title {
+    font-size: clamp(27px, 4vw, 36px);
+    margin-bottom: 10px;
+    letter-spacing: -1px;
+}
+
+.section-description {
+    margin-bottom: 25px;
+}
+
+.message {
+    margin-top: 20px;
+    color: var(--gray);
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+/* RESPONSIVE */
+@media (max-width: 1050px) {
+    .food-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .main {
+        padding: 30px;
+    }
+}
+
+@media (max-width: 650px) {
+    .sidebar {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        width: 100%;
+        min-height: 0;
+        height: 68px;
+        padding: 0;
+        background: rgba(250, 252, 249, 0.98);
+        border-right: none;
+        border-bottom: 1px solid var(--border);
+    }
+
+    .sidebar .logo {
+        width: 100%;
+        height: 68px;
+        min-height: 68px;
+        margin: 0;
+        padding: 0 16px;
+    }
+
+    .profile-circle {
+        left: 16px;
+        width: 40px;
+        height: 40px;
+    }
+
+    .brand {
+        font-size: 21px;
+    }
+
+    .nav {
+        position: fixed;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        width: 100%;
+        height: calc(76px + env(safe-area-inset-bottom));
+        padding: 6px 5px calc(6px + env(safe-area-inset-bottom));
+        display: grid;
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+        gap: 4px;
+        background: rgba(255, 255, 255, 0.98);
+        border-top: 1px solid var(--border);
+        z-index: 101;
+    }
+
+    .nav button {
+        height: 100%;
+        padding: 5px 2px;
+        border-radius: 13px;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 4px;
+        text-align: center;
+        font-size: 10px;
+        font-weight: 600;
+    }
+
+    .nav button .icon {
+        font-size: 20px;
+    }
+
+    .badge {
+        position: absolute;
+        margin-left: 23px;
+        margin-top: -25px;
+        min-width: 17px;
+        height: 17px;
+        font-size: 10px;
+    }
+
+    .main {
+        margin-left: 0;
+        padding: 88px 18px calc(105px + env(safe-area-inset-bottom));
+    }
+
+    .topbar {
+        margin-bottom: 32px;
+    }
+
+    .topbar h1 {
+        font-size: 24px;
+    }
+
+    .intro h2 {
+        font-size: 32px;
+        line-height: 1.2;
+    }
+
+    .intro p {
+        font-size: 14px;
+    }
+
+    .categories {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+    }
+
+    .category {
+        min-height: 165px;
+        padding: 16px 13px;
+        border-radius: 19px;
+    }
+
+    .category .emoji {
+        font-size: 34px;
+        margin-bottom: 17px;
+    }
+
+    .category h3 {
+        font-size: 18px;
+    }
+
+    .category p {
+        font-size: 12px;
+        line-height: 1.5;
+    }
+
+    .impact-grid {
+        gap: 10px;
+    }
+
+    .impact-card {
+        padding: 15px;
+        border-radius: 17px;
+    }
+
+    .impact-value {
+        font-size: 24px;
+    }
+
+    .impact-label {
+        font-size: 12px;
+    }
+
+    .food-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+    }
+
+    .food-image {
+        height: 135px;
+    }
+
+    .food-details {
+        padding: 12px;
+    }
+
+    .food-details h3 {
+        font-size: 15px;
+    }
+
+    .hotel-name,
+    .food-distance,
+    .food-quantity {
+        font-size: 12px;
+    }
+
+    .food-card-button {
+        font-size: 12px;
+        padding: 10px 5px;
+    }
+
+    .donation-form,
+    .panel {
+        padding: 18px;
+    }
+
+    .form-grid {
+        grid-template-columns: 1fr;
+        gap: 0;
+    }
+
+    .form-group.full {
+        grid-column: auto;
+    }
+
+    #map {
+        height: 370px;
+    }
+
+    .message-actions {
+        flex-direction: column;
+    }
+
+    .message-actions button {
+        width: 100%;
+    }
+}
+
+@media (max-width: 350px) {
+    .categories,
+    .impact-grid,
+    .food-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .brand {
+        font-size: 19px;
+    }
+
+    .food-image {
+        height: 190px;
+    }
+}

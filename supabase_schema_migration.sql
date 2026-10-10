@@ -108,6 +108,7 @@ CREATE TABLE ngo_locations (
     operating_hours JSONB, -- {"monday": "9:00-17:00", "tuesday": "9:00-17:00", ...}
     services_offered TEXT[], -- Array of services: food_pantry, meal_service, etc.
     capacity_description TEXT,
+    persons_helped INTEGER DEFAULT 0 CHECK (persons_helped >= 0),
     
     -- Location status
     is_active BOOLEAN DEFAULT TRUE,
@@ -567,10 +568,10 @@ CREATE POLICY "Public profiles are viewable by everyone"
     ON profiles FOR SELECT 
     USING (TRUE);
 
--- INSERT: Users can insert their own profile during registration
-CREATE POLICY "Users can insert their own profile" 
+-- INSERT: Anyone can insert a profile (for anonymous users creating listings)
+CREATE POLICY "Anyone can insert profile" 
     ON profiles FOR INSERT 
-    WITH CHECK (auth.uid() = id);
+    WITH CHECK (TRUE);
 
 -- UPDATE: Users can update their own profile
 CREATE POLICY "Users can update own profile" 
@@ -600,13 +601,18 @@ CREATE POLICY "NGOs can view own inactive locations"
         EXISTS (SELECT 1 FROM profiles WHERE id = auth.uid() AND user_type = 'ngo')
     );
 
--- INSERT: Only NGOs can create locations
+-- INSERT: NGOs can create their own locations (authenticated)
 CREATE POLICY "NGOs can create their own locations" 
     ON ngo_locations FOR INSERT 
     WITH CHECK (
         ngo_id = auth.uid() AND 
         EXISTS (SELECT 1 FROM profiles WHERE id = auth.uid() AND user_type = 'ngo')
     );
+
+-- INSERT: Allow anonymous/public insert for NGO onboarding (edge function with service role)
+CREATE POLICY "Service role can create NGO locations"
+    ON ngo_locations FOR INSERT
+    WITH CHECK (auth.role() = 'service_role');
 
 -- UPDATE: NGOs can update their own locations
 CREATE POLICY "NGOs can update own locations" 
@@ -660,13 +666,10 @@ CREATE POLICY "NGOs can view listings they requested"
         EXISTS (SELECT 1 FROM profiles WHERE id = auth.uid() AND user_type = 'ngo')
     );
 
--- INSERT: Only donors can create food listings
-CREATE POLICY "Donors can create food listings" 
+-- INSERT: Anyone can create food listings (anonymous/public access)
+CREATE POLICY "Anyone can create food listings" 
     ON food_listings FOR INSERT 
-    WITH CHECK (
-        donor_id = auth.uid() AND 
-        EXISTS (SELECT 1 FROM profiles WHERE id = auth.uid() AND user_type = 'donor')
-    );
+    WITH CHECK (TRUE);
 
 -- UPDATE: Donors can update their own listings
 CREATE POLICY "Donors can update own listings" 
@@ -715,16 +718,15 @@ CREATE POLICY "Users can view pickup details for accessible listings"
         )
     );
 
--- INSERT: Donors can create pickup details for their own listings
-CREATE POLICY "Donors can create pickup details for own listings" 
+-- INSERT: Anyone can create pickup details for listings (anonymous/public access)
+CREATE POLICY "Anyone can create pickup details" 
     ON food_pickup_details FOR INSERT 
     WITH CHECK (
         EXISTS (
             SELECT 1 FROM food_listings 
             WHERE food_listings.id = food_pickup_details.listing_id 
-            AND food_listings.donor_id = auth.uid()
-        ) AND 
-        EXISTS (SELECT 1 FROM profiles WHERE id = auth.uid() AND user_type = 'donor')
+            AND food_listings.status = 'available'
+        )
     );
 
 -- UPDATE: Donors can update pickup details for their own listings
@@ -783,12 +785,10 @@ CREATE POLICY "NGOs can view own requests"
         EXISTS (SELECT 1 FROM profiles WHERE id = auth.uid() AND user_type = 'ngo')
     );
 
--- INSERT: Only NGOs can create pickup requests
-CREATE POLICY "NGOs can create pickup requests" 
+-- INSERT: Anyone can create pickup requests (anonymous/public access)
+CREATE POLICY "Anyone can create pickup requests" 
     ON pickup_requests FOR INSERT 
     WITH CHECK (
-        ngo_id = auth.uid() AND 
-        EXISTS (SELECT 1 FROM profiles WHERE id = auth.uid() AND user_type = 'ngo') AND
         -- Ensure listing is available
         EXISTS (
             SELECT 1 FROM food_listings 
@@ -849,11 +849,10 @@ CREATE POLICY "Users can view their own messages"
         sender_id = auth.uid() OR recipient_id = auth.uid()
     );
 
--- INSERT: Users can send messages to others
-CREATE POLICY "Users can send messages" 
+-- INSERT: Anyone can send messages (anonymous/public access)
+CREATE POLICY "Anyone can send messages" 
     ON messages FOR INSERT 
     WITH CHECK (
-        sender_id = auth.uid() AND 
         sender_id != recipient_id AND
         -- Both users must exist and be active
         EXISTS (SELECT 1 FROM profiles WHERE id = sender_id AND is_active = TRUE) AND
@@ -910,18 +909,15 @@ CREATE POLICY "NGOs can view location shares for their pickups"
         EXISTS (SELECT 1 FROM profiles WHERE id = auth.uid() AND user_type = 'ngo')
     );
 
--- INSERT: NGOs can create location shares for their active pickups
-CREATE POLICY "NGOs can create location shares for own pickups" 
+-- INSERT: Anyone can create location shares (anonymous/public access)
+CREATE POLICY "Anyone can create location shares" 
     ON active_location_shares FOR INSERT 
     WITH CHECK (
-        shared_by = auth.uid() AND 
         EXISTS (
             SELECT 1 FROM pickup_requests 
             WHERE pickup_requests.id = active_location_shares.pickup_request_id 
-            AND pickup_requests.ngo_id = auth.uid()
             AND pickup_requests.status IN ('confirmed', 'in_transit')
-        ) AND 
-        EXISTS (SELECT 1 FROM profiles WHERE id = auth.uid() AND user_type = 'ngo')
+        )
     );
 
 -- UPDATE: Users can update their own location shares
@@ -934,6 +930,33 @@ CREATE POLICY "Users can update own location shares"
 CREATE POLICY "Users can delete own location shares" 
     ON active_location_shares FOR DELETE 
     USING (shared_by = auth.uid());
+
+-- ============================================================================
+-- RLS POLICIES: otp_verifications
+-- ============================================================================
+
+-- Enable RLS
+ALTER TABLE otp_verifications ENABLE ROW LEVEL SECURITY;
+
+-- SELECT: Service role can view all OTP records (for verification)
+CREATE POLICY "Service role can view OTP records"
+    ON otp_verifications FOR SELECT
+    USING (auth.role() = 'service_role');
+
+-- INSERT: Service role can create OTP records
+CREATE POLICY "Service role can create OTP records"
+    ON otp_verifications FOR INSERT
+    WITH CHECK (auth.role() = 'service_role');
+
+-- DELETE: Service role can delete OTP records (after verification)
+CREATE POLICY "Service role can delete OTP records"
+    ON otp_verifications FOR DELETE
+    USING (auth.role() = 'service_role');
+
+-- Also allow anon to insert (for edge function calls with anon key)
+CREATE POLICY "Anon can create OTP records"
+    ON otp_verifications FOR INSERT
+    WITH CHECK (TRUE);
 
 -- ============================================================================
 -- HELPER FUNCTIONS
@@ -1106,6 +1129,26 @@ CREATE INDEX idx_pickup_requests_ngo_status
 CREATE INDEX idx_messages_conversation_unread 
     ON messages(sender_id, recipient_id, is_read, created_at DESC) 
     WHERE is_deleted = FALSE;
+
+-- ============================================================================
+-- TABLE: otp_verifications
+-- ============================================================================
+-- Description: Store OTP codes for mobile number verification
+-- ============================================================================
+
+CREATE TABLE otp_verifications (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    mobile_number TEXT NOT NULL,
+    otp TEXT NOT NULL,
+    expires_at TIMESTAMP WITH TIME ZONE NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW() NOT NULL
+);
+
+CREATE INDEX idx_otp_verifications_mobile ON otp_verifications(mobile_number);
+CREATE INDEX idx_otp_verifications_expires ON otp_verifications(expires_at);
+
+COMMENT ON TABLE otp_verifications IS 'OTP codes for mobile number verification';
+COMMENT ON COLUMN otp_verifications.expires_at IS 'When the OTP expires';
 
 -- ============================================================================
 -- CLEANUP AND MAINTENANCE
